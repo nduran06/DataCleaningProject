@@ -406,52 +406,42 @@ def predicted_values(data, midSize):
     p=0
     c=0
     for row in df.iterrows():
-        if p==0:
+        """if p==0:
             change_cell_value(df, 0, 'color', nan)
             change_cell_value(df, 0, 'director_name', nan)
-
+            change_cell_value(df, 0, 'duration', nan)"""
 
             #print(df.iloc[0,  df.columns.get_loc('color')])
-            null_row_values, not_null_row_values, null_column, not_null_column=div_null_row_values(c, columns_list, df)
-            print(null_column)
-            print(not_null_row_values)
+        null_row_values, not_null_row_values, null_column, not_null_column=div_null_row_values(c, columns_list, df)
 
-            if len(null_column)>0:
-                for column in null_column:
+        if len(null_column)>0:
+            for column in null_column:
         
-                    rest_null_values=null_column.copy()
-                    rest_null_values.remove(column)
+                rest_null_values=null_column.copy()
+                rest_null_values.remove(column)
                     
-                    conf_columns_list=columns_list.copy()
-                    for cc in rest_null_values:
-                        conf_columns_list.remove(cc)
+                conf_columns_list=columns_list.copy()
+                for cc in rest_null_values:
+                    conf_columns_list.remove(cc)
                     
-                    conf_use_to_predicted=use_to_predicted.copy()
-                    conf_use_to_predicted.drop(rest_null_values, inplace=True, axis=1)
-
+                conf_use_to_predicted=use_to_predicted.copy()
+                conf_use_to_predicted.drop(rest_null_values, inplace=True, axis=1)
                     
-                    print(len(conf_use_to_predicted.columns.tolist()))
-                    
-                    le = preprocessing.LabelEncoder()
-                    indep, dep, dict_to_replace= predicted_tool(conf_columns_list, conf_use_to_predicted, column, le)
-                    reg=get_prediction_tool(indep, dep)            
+                le = preprocessing.LabelEncoder()
+                indep, dep, dict_to_replace= predicted_tool(conf_columns_list, conf_use_to_predicted, column, le)
+                reg=get_prediction_tool(indep, dep)            
                         
-                    print(len(indep))
-                    nueva_lista=transform_data(not_null_row_values, le)[1]
-                    print(len(nueva_lista))
+                nueva_lista=transform_data(not_null_row_values, le)[1]
 
-                    predicted=get_prediciton(reg, nueva_lista)[0]
-                    print(predicted)
+                predicted=get_prediciton(reg, nueva_lista)[0]
+                new_cell_value=predicted
+                if use_to_predicted.dtypes[column]==np.dtype('object'):
                     new_cell_value=get_new_cell_value(dict_to_replace, predicted)
-                    change_cell_value(df, c, column, new_cell_value)
-                    print(df.iloc[0,  df.columns.get_loc(column)])
                         
-
-            "REVISA LOS DICCIONARIOS"
-
-
-            c+=1
-            p=1
+                change_cell_value(df, c, column, new_cell_value)
+                    #print(df.iloc[0,  df.columns.get_loc(column)])
+        print(c)
+        c+=1
         
     #print(other_values['color'].tolist())
     
@@ -559,6 +549,7 @@ def predicted_tool(columns_list, use_to_predicted, column_pred, le):
                 indep.append(datos)
         else:
             datos=use_to_predicted[column_pred].tolist()    
+            dict_to_replace=dict()
             if use_to_predicted.dtypes[column_pred]==np.dtype('object'):
                 transform=transform_data(datos,le)
                 dep=transform[1]
@@ -617,7 +608,6 @@ def prueba(recurso):
     replace_with_mean_and_mode(dataInicial)
     
     midSize = len(dataInicial) // 2
-    print(midSize)
     parteData = dataInicial.ix[:midSize, :]
     
     data.ix[:midSize, :] = parteData
