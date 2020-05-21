@@ -25,7 +25,7 @@ public class SparkApp {
 
 		String page = "<!DOCTYPE html>" + "<html>" + "<body>" + "<h1>Data Cleaning</h1>" + "<br/>" + "Result: " + time
 				+ "</body>" + "</html>";
-		return page;
+		return time;
 	}
 
 	private static String getSquarePage() {
