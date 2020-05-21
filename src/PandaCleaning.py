@@ -29,6 +29,8 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import classification_report 
 from sklearn.feature_extraction import DictVectorizer
 from numpy import nan, NAN
+from timeit import timeit
+from timeit import default_timer as timer
 
 """
     Retorna la variable que continene a los datos según el path dado
@@ -484,6 +486,14 @@ def prueba(recurso):
         
     data.to_csv("resources/resultClean.csv", encoding="utf-8")
     
-    
-prueba("resources/movie_metadata.csv")
+
+def tiempo(ruta):
+    start = timer()
+    prueba(ruta)
+    end = timer()
+    print(end - start) 
+          
+          
+tiempo("resources/movie_metadata.csv")
+
 
