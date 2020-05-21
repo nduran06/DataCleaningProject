@@ -458,6 +458,9 @@ def change_cell_value(df, row_num, column_name, new_value):
 
 def prueba(recurso):
     data = formatData(recurso)
+    
+    drop_duplicates(data)
+    
     df = pd.DataFrame(data)
     #print(df.isnull().sum())
     result = set_index(data)
