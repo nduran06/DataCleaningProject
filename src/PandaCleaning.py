@@ -491,7 +491,13 @@ def tiempo(ruta):
     start = timer()
     prueba(ruta)
     end = timer()
-    print(end - start) 
+    
+    total=end-start
+
+    print(total) 
+    
+    return total
+    
           
           
 tiempo("resources/movie_metadata.csv")
