@@ -12,6 +12,7 @@ import json
 import _pickle as pickle
 import matplotlib.pyplot as plt
 import copy
+import seaborn as sns
 
 from unidecode import unidecode
 from sklearn import preprocessing
@@ -248,7 +249,7 @@ def set_index(data):
     return [data, new_index]
 
 
-def axes_compare(data, index_value, depen_value):
+def axes_compare(data, depen_value):
     df = pd.DataFrame(data)
 
     size = len(data)
@@ -263,173 +264,61 @@ def axes_compare(data, index_value, depen_value):
 
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.5, random_state=42)
 
-    print("x_train")
-    print(x_train)
-    print("y_train")
-    print(y_train)
-
     x_train = x_train.values.reshape([x_train.values.shape[0], 1])
     x_test = x_test.values.reshape([x_test.values.shape[0], 1])
 
     regr = linear_model.LinearRegression()
     regr.fit(x_train, y_train)
     y_pred = regr.predict(x_test)
+    
+    sns.jointplot(x='index_order', y='duration', data=data, kind="reg");
 
-    plt.scatter(x_train, y_train, color='red')
-    plt.scatter(x_test, y_pred, color='blue')
 
     plt.show()
 
 
-def entrenamiento(data, independ_values, depen_value):
-    
-    dict_values=dict()
-    
-    tiposDatos = data.columns.to_series().groupby(data.dtypes).groups
-    
-    # Columnas con valores de texto
-    columns_text = tiposDatos[np.dtype('object')]
-    
-    
-    """df = pd.DataFrame(data)
-    dummies = pd.get_dummies(df.categorical)
-    print(dummies)"""
-    
-    values_train=[]
-    
-        
-    #for c in indepen_values:
-        #column_type=data.dtypes[c]
-    """if data.dtypes[c]!=np.dtype('object') and data.dtypes[depen_value]!=np.dtype('object'):
-            
-        values_train.append(getColumnValues(data, c))
-    
-        depend_value=getColumnValues(data, depen_value)
-            
-        X=np.array(values_train).T
-        Y=np.array(depend_value)
-            
-        reg=LinearRegression()
-        reg=reg.fit(X,Y)
-        Y_pred=reg.predict(X)"""
-    
-    """"X=data[independ_values]
-    X = pd.get_dummies(data=X, drop_first=True)
+def delete_values_from_list(lista, list_values_delete):
+    for value in list_values_delete:
+        lista.remove(value)
 
-    Y=data[depen_value]
-    
-    if(data.dtypes[depen_value]==np.dtype('object')):
-        Y=pd.get_dummies(data[depen_value], drop_first=True)"""
-        
-    X = data.drop(columns=depen_value).iloc[:, :].values
-    y = data[depen_value].copy()
-        
-    #Encoding the predicting variable 
-    labelencoder_y = LabelEncoder() 
-    y = labelencoder_y.fit_transform(y) 
-  
-    #Splitting the data into test and train dataset 
-    X_train, X_test, y_train, y_test = train_test_split( 
-              X, y, test_size = 0.3, random_state = 0) 
-  
-    #Using the random forest classifier for the prediction 
-    classifier=RandomForestClassifier() 
-    classifier=classifier.fit(X_train,y_train) 
-    predicted=classifier.predict(X_test) 
-   
-  
-    print ('Confusion Matrix :') 
-    print(confusion_matrix(y_test, predicted)) 
-    print ('Accuracy Score :',accuracy_score(y_test, predicted)) 
-    print ('Report : ') 
-    print (classification_report(y_test, predicted)) 
 
 """Predice los valores"""
 
 
-def predicted_values(data, midSize):
+def predicted_values(data, midSize, totalSize):
     
-    use_to_predicted=data.ix[:midSize, :]  
-    other_values=data.ix[midSize:, :]
+    use_to_predicted=data.iloc[:midSize, :]  
+    other_values=data.iloc[midSize:, :]
 
     columns_list=getListColumns(data)
     columns_list.pop() 
     columns_dict=dict(zip(columns_list, range(len(columns_list))))
     
-    print(data.shape)
-    print(columns_list)
-    
-    vectorizer = DictVectorizer()
-    
-    """le = preprocessing.LabelEncoder()
-    
-    "le = LabelEncoder()
-    le.fit(['a', 'e', 'b', 'z'])
-    le.classes_
-    array(['a', 'b', 'e', 'z'], dtype='U1')
-    samples = [dict(enumerate(sample)) for sample in data['color']]"
-        
-    indep=[]
-    dep=[]
-        
-    data_x=use_to_predicted.drop(columns='color')
-    data_y = use_to_predicted['color'].copy()
-    
-    dict_to_replace=dict()
-    
-    for column in columns_list:
-        if column!='color':
-            datos=use_to_predicted[column].tolist()
-            if use_to_predicted.dtypes[column]==np.dtype('object'):
-                set_col_1 = list(set(datos))
-                le.fit(datos)
-                dict_datos=dict(zip(set_col_1, le.transform(set_col_1)))
-                dict_to_replace=dict_datos.copy()
-                indep.append(le.transform(datos))
-            else:
-                indep.append(datos)
-        else:
-            datos=use_to_predicted['color'].tolist()
-            set_col_1 = list(set(datos))
-            le.fit(datos)
-            dict_datos=dict(zip(set_col_1, le.transform(set_col_1)))
-            dep=le.transform(datos)
-    
-    X=np.array(indep).T
-    Y=np.array(dep)    
-    reg=LinearRegression()
-    reg=reg.fit(X,Y)
-    Y_pred=reg.predict(X)"""
+    ##print(data.shape)
+    ##print(columns_list)
     
     
     df = pd.DataFrame(other_values)
-    p=0
     c=0
     for row in df.iterrows():
-        """if p==0:
-            change_cell_value(df, 0, 'color', nan)
-            change_cell_value(df, 0, 'director_name', nan)
-            change_cell_value(df, 0, 'duration', nan)"""
 
-            #print(df.iloc[0,  df.columns.get_loc('color')])
+        ##print(df.iloc[0,  df.columns.get_loc('color')])
         null_row_values, not_null_row_values, null_column, not_null_column=div_null_row_values(c, columns_list, df)
 
         if len(null_column)>0:
             for column in null_column:
-        
                 rest_null_values=null_column.copy()
                 rest_null_values.remove(column)
                     
                 conf_columns_list=columns_list.copy()
-                for cc in rest_null_values:
-                    conf_columns_list.remove(cc)
+                delete_values_from_list(conf_columns_list, rest_null_values)
                     
                 conf_use_to_predicted=use_to_predicted.copy()
                 conf_use_to_predicted.drop(rest_null_values, inplace=True, axis=1)
                     
                 le = preprocessing.LabelEncoder()
                 indep, dep, dict_to_replace= predicted_tool(conf_columns_list, conf_use_to_predicted, column, le)
-                reg=get_prediction_tool(indep, dep)            
+                reg, X_V, Y_V=get_prediction_tool(indep, dep)            
                         
                 nueva_lista=transform_data(not_null_row_values, le)[1]
 
@@ -437,50 +326,23 @@ def predicted_values(data, midSize):
                 new_cell_value=predicted
                 if use_to_predicted.dtypes[column]==np.dtype('object'):
                     new_cell_value=get_new_cell_value(dict_to_replace, predicted)
-                        
+                
+                    
                 change_cell_value(df, c, column, new_cell_value)
-                    #print(df.iloc[0,  df.columns.get_loc(column)])
-        print(c)
+
+        #        axes_compare(use_to_predicted, column)
+                ##print(df.iloc[0,  df.columns.get_loc(column)])
+        #print(c)
+        
+        """dimension=midSize+c+1
+                
+        if dimension<totalSize:
+            use_to_predicted=data.iloc[:dimension, :]  
+            #print(dimension)
+            #print(use_to_predicted.shape)"""
+        
         c+=1
-        
-    #print(other_values['color'].tolist())
     
-    
-    """for column in columns_list:
-        data_x = use_to_predicted.drop(columns=column)
-        data_y = use_to_predicted[column].copy()
-        
-        entrenamiento(getListColumns(data_x), column, use_to_predicted)
-       
-
-    columns_num=len(columns_list)
-    con=0
-    
-    while con<columns_num:
-        independ_values=[]
-        if(con+1<columns_num):
-            independ_values=columns_list[:con]+columns_list[con+1:]
-        
-        else:
-            independ_values=columns_list[:con]
-            
-        depend_value=columns_list[con]
-        
-        entrenamiento(use_to_predicted, independ_values, depend_value)
-        
-        con+=1"""
-    
-    
-    """"b=False
-    df = pd.DataFrame(use_to_predicted)
-    for row in df.iterrows():
-        if b==False:
-            print(row)
-            b=True"""
-            
-            
-
-#def fill_data(null_row_values, not_null_row_values):
     
 """
 
@@ -512,7 +374,7 @@ def div_null_row_values(num_row, columns_list, df):
     for column in columns_list:
         cell_value=df.iloc[num_row,  df.columns.get_loc(column)]
         if pd. notna(cell_value):
-            #print(df.iloc[num_row,  df.columns.get_loc('color')])
+            ##print(df.iloc[num_row,  df.columns.get_loc('color')])
             not_null_row_values.append(cell_value)
             not_null_column.append(column)
         else:
@@ -579,7 +441,7 @@ def get_prediction_tool(indep, dep):
     reg=LinearRegression()
     reg=reg.fit(X_scaled,Y)
             
-    return reg
+    return [reg, X_scaled, Y]
 
 
 """
@@ -590,12 +452,14 @@ def get_prediction_tool(indep, dep):
     new_value: Nuevo valor de la celda
 """
 def change_cell_value(df, row_num, column_name, new_value):
+    
     df.iloc[row_num, df.columns.get_loc(column_name)]=new_value
 
 
 def prueba(recurso):
     data = formatData(recurso)
-    """data.to_csv("resources/resultClean.csv", encoding="utf-8")"""
+    df = pd.DataFrame(data)
+    #print(df.isnull().sum())
     result = set_index(data)
     
     dataInicial = result[0]
@@ -607,14 +471,14 @@ def prueba(recurso):
 
     replace_with_mean_and_mode(dataInicial)
     
-    midSize = len(dataInicial) // 2
-    parteData = dataInicial.ix[:midSize, :]
+    totalSize=len(dataInicial)
+    midSize =  totalSize//2
+    parteData = dataInicial.iloc[:midSize, :]
     
-    data.ix[:midSize, :] = parteData
+    data.iloc[:midSize, :] = parteData
     
-    predicted_values(data, midSize)
+    predicted_values(data, midSize, totalSize)
         
-    """axes_compare(data, index_value, 'duration')"""
     data.to_csv("resources/resultClean.csv", encoding="utf-8")
     
     
