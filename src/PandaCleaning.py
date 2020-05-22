@@ -273,7 +273,7 @@ def axes_compare(data, depen_value):
     regr.fit(x_train, y_train)
     y_pred = regr.predict(x_test)
     
-    sns.jointplot(x='index_order', y='duration', data=data, kind="reg");
+    sns.jointplot(x='index_order', y='duration', data=data, kind="reg"),
 
 
     plt.show()
