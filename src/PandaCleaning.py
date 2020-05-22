@@ -511,6 +511,10 @@ def tiempo(ruta):
     
           
           
-tiempo("resources/metadata.csv")
+if __name__ == "__main__":
+    file_path = sys.argv[1]
+    tiempo(file_path)
+          
+
 
 

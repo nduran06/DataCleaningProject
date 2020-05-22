@@ -13,7 +13,6 @@ import _pickle as pickle
 import matplotlib.pyplot as plt
 import copy
 import seaborn as sns
-import sys
 
 from unidecode import unidecode
 from sklearn import preprocessing
@@ -39,7 +38,7 @@ from timeit import default_timer as timer
 
 
 def formatData(data_path):
-    return pd.read_csv (data_path) 
+    return pd.read_csv (data_path,low_memory=False) 
     
 """
     Se obtiene el nombre de las columnas
@@ -179,7 +178,9 @@ def drop_duplicates(data):
 """
 
 
-def utfProcessData(column_name):
+def utfProcessData(data, column):
+    column_name=data[column]
+    
     try : 
         column_name = column_name.decode('utf8')
     except AttributeError:
@@ -458,11 +459,20 @@ def change_cell_value(df, row_num, column_name, new_value):
     
     df.iloc[row_num, df.columns.get_loc(column_name)]=new_value
 
+def set_index_order(data, index_name):
+    df = pd.DataFrame(data)
+    
+    size=len(data)
+    
+    lista = list(range(0, size))
+    df[index_name] = lista
+    
+    return data
+    
+    
 
 def prueba(recurso):
     data = formatData(recurso)
-    
-    drop_duplicates(data)
     
     df = pd.DataFrame(data)
     #print(df.isnull().sum())
@@ -498,8 +508,9 @@ def tiempo(ruta):
     print(total) 
     
     return total
-
-
+    
+          
+          
 
 if __name__ == "__main__":
     file_path = sys.argv[1]
