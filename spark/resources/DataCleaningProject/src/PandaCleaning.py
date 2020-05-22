@@ -474,7 +474,7 @@ def set_index_order(data, index_name):
 
 def prueba(recurso):
     data = formatData(recurso)
-    
+    drop_duplicates(data)
     df = pd.DataFrame(data)
     #print(df.isnull().sum())
     result = set_index(data)

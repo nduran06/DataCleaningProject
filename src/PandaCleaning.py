@@ -475,7 +475,7 @@ def prueba(recurso):
     data = formatData(recurso)
     
     df = pd.DataFrame(data)
-    #print(df.isnull().sum())
+    print(df.isnull().sum())
     result = set_index(data)
     
     dataInicial = result[0]
@@ -509,12 +509,7 @@ def tiempo(ruta):
     
     return total
     
-          
-          
-if __name__ == "__main__":
-    file_path = sys.argv[1]
-    tiempo(file_path)
-          
 
+tiempo("resources/movie_metadata.csv")
 
 
